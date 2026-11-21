@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050509" />
+  <meta name="description" content="A universe of memories. One final thank you." />
+  <title>Somewhere, in the Universe of Us</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050509;
+      --panel: rgba(18, 18, 28, .82);
+      --text: #f3eee8;
+      --muted: #aaa3a8;
+      --gold: #d8bd91;
+      --line: rgba(216, 189, 145, .2);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font-family: "DM Sans", sans-serif; font-weight: 300;
+      overflow-x: hidden;
+    }
+    button { font: inherit; }
+    #stars { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .ambient {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 40%, rgba(53, 42, 75, .18), transparent 55%),
+                  radial-gradient(ellipse at 80% 80%, rgba(91, 64, 75, .1), transparent 45%);
+    }
+    main, header, footer { position: relative; z-index: 1; }
+    .hero {
+      min-height: 100svh; display: grid; place-items: center; text-align: center;
+      padding: 32px 22px; position: relative;
+    }
+    .hero-inner { max-width: 760px; animation: rise 1.8s ease both; }
+    .eyebrow {
+      color: var(--gold); text-transform: uppercase; letter-spacing: .28em;
+      font-size: .68rem; margin-bottom: 28px;
+    }
+    h1, h2, .serif { font-family: "Playfair Display", Georgia, serif; font-weight: 400; }
+    h1 { font-size: clamp(2.7rem, 7vw, 6.2rem); line-height: 1.08; margin: 0 auto 22px; }
+    .hero p { color: #c6bec3; line-height: 1.9; font-size: clamp(.95rem, 2vw, 1.12rem); }
+    .gold { color: var(--gold); font-style: italic; }
+    .primary-btn, .ghost-btn {
+      border: 1px solid var(--line); color: var(--text); background: rgba(255,255,255,.035);
+      padding: 14px 24px; border-radius: 999px; cursor: pointer; transition: .3s ease;
+      letter-spacing: .08em; text-transform: uppercase; font-size: .7rem;
+    }
+    .primary-btn { margin-top: 28px; background: rgba(216,189,145,.12); border-color: rgba(216,189,145,.55); }
+    .primary-btn:hover, .ghost-btn:hover { background: rgba(216,189,145,.2); transform: translateY(-2px); }
+    .scroll-note { position: absolute; bottom: 28px; color: #77717a; font-size: .65rem; letter-spacing: .2em; text-transform: uppercase; }
+    .section { max-width: 1160px; margin: auto; padding: 110px 24px; }
+    .section-head { text-align: center; max-width: 680px; margin: 0 auto 54px; }
+    .section-head h2 { font-size: clamp(2rem, 5vw, 3.7rem); margin: 12px 0 14px; }
+    .section-head p { color: var(--muted); line-height: 1.85; }
+    .chapter-label { color: var(--gold); letter-spacing: .24em; text-transform: uppercase; font-size: .65rem; }
+    .gallery {
+      display: grid; grid-template-columns: repeat( auto-fit, minmax(min(100%, 220px), 1fr) );
+      gap: 22px; align-items: start;
+    }
+    .memory-card {
+      position: relative; border: 1px solid rgba(255,255,255,.12); border-radius: 5px;
+      overflow: hidden; padding: 0; background: #111; cursor: pointer; text-align: left;
+      transition: transform .5s ease, border-color .4s ease, box-shadow .4s ease;
+      animation: cardIn .9s both;
+    }
+    .memory-card:nth-child(3n+2) { margin-top: 34px; }
+    .memory-card:hover { transform: translateY(-8px) rotate(.3deg); border-color: rgba(216,189,145,.55); box-shadow: 0 18px 55px rgba(0,0,0,.4); }
+    .memory-card img { display: block; width: 100%; aspect-ratio: 4/5; object-fit: cover; opacity: .88; transition: .6s; }
+    .memory-card:hover img { opacity: 1; transform: scale(1.035); }
+    .memory-card .card-caption { display: block; padding: 15px 16px 17px; color: #d9d0d0; font-family: "Playfair Display", serif; font-size: 1.05rem; }
+    .memory-card .card-meta { display: block; padding: 0 16px 15px; color: #8e8790; font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; }
+    .empty-note { grid-column: 1/-1; text-align: center; color: #928a93; border: 1px dashed var(--line); padding: 32px; line-height: 1.8; }
+    .chapters { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; }
+    .chapter {
+      min-height: 230px; padding: 28px; border: 1px solid var(--line);
+      background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.012));
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .chapter .number { color: var(--gold); font-size: .7rem; letter-spacing: .2em; }
+    .chapter h3 { font: 400 1.55rem "Playfair Display", serif; margin: 26px 0 10px; }
+    .chapter p { color: var(--muted); line-height: 1.75; font-size: .9rem; margin: 0; }
+    .messages { max-width: 820px; margin: auto; display: grid; gap: 16px; }
+    .message {
+      padding: 26px 30px; background: rgba(255,255,255,.035);
+      border-left: 1px solid var(--gold); color: #d9d1d2;
+      font: italic 1.15rem/1.8 "Playfair Display", serif;
+    }
+    .message small { display: block; margin-top: 12px; color: #8f8790; font: .65rem "DM Sans", sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+    .farewell {
+      min-height: 85vh; display: grid; place-items: center; text-align: center;
+      padding: 100px 24px; border-top: 1px solid rgba(216,189,145,.1);
+    }
+    .farewell-inner { max-width: 760px; }
+    .farewell h2 { font-size: clamp(2.6rem, 7vw, 5.2rem); margin: 12px 0 28px; }
+    .farewell p { color: #c3bbc2; line-height: 2; font-size: 1rem; }
+    .signature { margin-top: 38px; color: var(--gold); font: italic 1.5rem "Playfair Display", serif; }
+    footer { text-align: center; padding: 28px; color: #625d67; font-size: .65rem; letter-spacing: .16em; text-transform: uppercase; }
+    .modal {
+      position: fixed; inset: 0; z-index: 5; background: rgba(2,2,5,.92);
+      display: none; align-items: center; justify-content: center; padding: 22px;
+      backdrop-filter: blur(14px);
+    }
+    .modal.open { display: flex; animation: fade .25s ease; }
+    .modal-content { width: min(920px, 100%); max-height: 92vh; display: grid; grid-template-columns: 1.1fr .9fr; gap: 28px; align-items: center; }
+    .modal img { width: 100%; max-height: 82vh; object-fit: contain; }
+    .modal-copy h3 { font: 400 clamp(1.7rem,4vw,2.5rem) "Playfair Display",serif; margin: 0 0 16px; }
+    .modal-copy p { color: #c4bbc3; line-height: 1.9; white-space: pre-line; }
+    .close { position: absolute; top: 22px; right: 24px; border: 1px solid var(--line); background: transparent; color: white; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @keyframes rise { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fade { from { opacity:0; } to { opacity:1; } }
+    @keyframes cardIn { from { opacity:0; transform:translateY(18px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @media (max-width: 700px) {
+      .section { padding: 78px 18px; }
+      .memory-card:nth-child(3n+2) { margin-top: 0; }
+      .modal-content { grid-template-columns: 1fr; gap: 14px; overflow-y: auto; }
+      .modal img { max-height: 58vh; }
+      .modal-copy { padding: 0 4px 12px; }
+      .message { padding: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <div class="eyebrow">A small universe of memories</div>
+      <h1>Somewhere, in<br><span class="gold">the Universe of Us.</span></h1>
+      <p>Before we say goodbye,<br>let's revisit a little universe that once meant everything.</p>
+      <button class="primary-btn" id="enterBtn">Enter our memories</button>
+    </div>
+    <div class="scroll-note">A journey through gratitude</div>
+  </header>
+
+  <main>
+    <section class="section reveal" id="memories">
+      <div class="section-head">
+        <div class="chapter-label">Chapter I · The moments</div>
+        <h2>Little pieces of <span class="gold">forever.</span></h2>
+        <p>Some moments stay with us quietly. Explore each photograph to revisit the story behind it.</p>
+      </div>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <section class="section reveal" id="chapters">
+      <div class="section-head">
+        <div class="chapter-label">Chapter II · What I remember</div>
+        <h2>The little things <span class="gold">that mattered.</span></h2>
+        <p>Not grand gestures alone, but the small things that made ordinary days feel special.</p>
+      </div>
+      <div class="chapters" id="chapterCards"></div>
+    </section>
+
+    <section class="section reveal" id="words">
+      <div class="section-head">
+        <div class="chapter-label">Chapter III · The words</div>
+        <h2>Messages worth <span class="gold">keeping.</span></h2>
+        <p>Words from another time, kept here with care and gratitude.</p>
+      </div>
+      <div class="messages" id="messages"></div>
+    </section>
+
+    <section class="farewell reveal" id="goodbye">
+      <div class="farewell-inner">
+        <div class="chapter-label">The final chapter</div>
+        <h2>One final <span class="gold">thank you.</span></h2>
+        <p>
+          Thank you for the gifts, the laughter, the conversations, the comfort
+          and the memories.<br><br>
+          Thank you for being a part of my life. I don't want to erase what happened
+          or pretend that it meant nothing. There were beautiful moments, and I will
+          always be grateful for them.<br><br>
+          This is not an attempt to bring anything back. It is simply my way of
+          saying thank you. Whatever tomorrow holds, I sincerely wish you happiness,
+          peace and everything beautiful life has to offer.
+        </p>
+        <div class="signature">With gratitude, always.</div>
+        <p style="margin-top:28px;color:#77717a;font-size:.8rem">Take care. Goodbye.</p>
+      </div>
+    </section>
+  </main>
+  <footer>Made of memories · Held with gratitude</footer>
+
+  <div class="modal" id="photoModal" role="dialog" aria-modal="true" aria-label="Memory photograph">
+    <button class="close" id="closeModal" aria-label="Close">×</button>
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="A memory" />
+      <div class="modal-copy">
+        <div class="chapter-label">A moment remembered</div>
+        <h3 id="modalTitle"></h3>
+        <p id="modalCaption"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*
+      ADD YOUR CONTENT HERE.
+      1) Put image files inside the "photos" folder.
+      2) Replace the sample entries below with your own filenames and captions.
+      3) Keep filenames and paths exact, including capital letters.
+    */
+    const memories = [
+      {
+        image: "photos/photo-01.jpg",
+        title: "My first gift",
+        category: "Gifts",
+        caption: "A small gift, but a memory I will always associate with thoughtfulness. Thank you for making that moment special."
+      },
+      {
+        image: "photos/photo-02.jpg",
+        title: "A birthday to remember",
+        category: "Birthdays",
+        caption: "Thank you for remembering my day and for the effort behind the gift. It meant more than I probably expressed."
+      },
+      {
+        image: "photos/photo-03.jpg",
+        title: "A moment of comfort",
+        category: "Little things",
+        caption: "Some moments do not need many words. Your presence made that moment feel a little lighter."
+      },
+      {
+        image: "photos/photo-04.jpg",
+        title: "The good old days",
+        category: "Memories",
+        caption: "A little piece of a time I am glad I got to experience. I will remember it with gratitude."
+      }
+    ];
+
+    const chapters = [
+      { number: "01", title: "My first gift", text: "For the thought, the surprise and the feeling attached to that first little gesture." },
+      { number: "02", title: "My first birthday gift", text: "For remembering my day and making it feel a little more special." },
+      { number: "03", title: "My first comfort", text: "For the moments when a conversation, a presence or a simple gesture made things lighter." },
+      { number: "04", title: "My first friend", text: "For the laughter, the conversations and the friendship that made its own place in my life." },
+      { number: "05", title: "Little things, big memories", text: "For the ordinary moments that became meaningful simply because we shared them." }
+    ];
+
+    // Add the good messages you want to preserve. Keep each excerpt short.
+    const messages = [
+      { text: "Add a meaningful message here exactly as it was written.", label: "A message to remember" },
+      { text: "Add another message here. You can include a short exchange or a birthday wish.", label: "A little note" }
+    ];
+
+    const gallery = document.getElementById("gallery");
+    memories.forEach((memory, index) => {
+      const card = document.createElement("button");
+      card.className = "memory-card";
+      card.style.animationDelay = `${index * 90}ms`;
+      card.innerHTML = `
+        <img src="${memory.image}" alt="${memory.title}" loading="lazy"
+             onerror="this.style.display='none'; this.parentElement.classList.add('image-missing');" />
+        <span class="card-caption">${escapeHTML(memory.title)}</span>
+        <span class="card-meta">${escapeHTML(memory.category || "Memory")}</span>`;
+      card.addEventListener("click", () => openMemory(memory));
+      gallery.appendChild(card);
+    });
+    if (!memories.length) gallery.innerHTML = '<div class="empty-note">Your photographs will appear here once you add them to the memories list.</div>';
+
+    const chapterCards = document.getElementById("chapterCards");
+    chapters.forEach(item => {
+      const card = document.createElement("article");
+      card.className = "chapter";
+      card.innerHTML = `<div class="number">${item.number}</div><div><h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.text)}</p></div>`;
+      chapterCards.appendChild(card);
+    });
+
+    const messageList = document.getElementById("messages");
+    messages.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "message";
+      card.innerHTML = `${escapeHTML(item.text)}<small>${escapeHTML(item.label || "A message")}</small>`;
+      messageList.appendChild(card);
+    });
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[char]));
+    }
+
+    const modal = document.getElementById("photoModal");
+    function openMemory(memory) {
+      document.getElementById("modalImage").src = memory.image;
+      document.getElementById("modalImage").alt = memory.title;
+      document.getElementById("modalTitle").textContent = memory.title;
+      document.getElementById("modalCaption").textContent = memory.caption;
+      modal.classList.add("open");
+      document.body.style.overflow = "hidden";
+      document.getElementById("closeModal").focus();
+    }
+    function closeMemory() {
+      modal.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+    document.getElementById("closeModal").addEventListener("click", closeMemory);
+    modal.addEventListener("click", event => { if (event.target === modal) closeMemory(); });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") closeMemory(); });
+
+    document.getElementById("enterBtn").addEventListener("click", () => {
+      document.getElementById("memories").scrollIntoView({ behavior: "smooth" });
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+    // Subtle star-particle field. Respects reduced-motion preferences.
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+    let width = 0, height = 0;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function resizeCanvas() {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth; height = window.innerHeight;
+      canvas.width = width * ratio; canvas.height = height * ratio;
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      particles = Array.from({ length: Math.min(130, Math.floor(width / 9)) }, () => ({
+        x: Math.random() * width, y: Math.random() * height,
+        r: Math.random() * 1.5 + .25, speed: Math.random() * .32 + .08,
+        alpha: Math.random() * .55 + .15, drift: (Math.random() - .5) * .18
+      }));
+    }
+    function drawStars() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(222, 205, 190, ${p.alpha})`;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        if (!reduceMotion) {
+          p.y -= p.speed; p.x += p.drift;
+          if (p.y < -5) { p.y = height + 5; p.x = Math.random() * width; }
+          if (p.x < -5) p.x = width + 5;
+          if (p.x > width + 5) p.x = -5;
+        }
+      });
+      if (!reduceMotion) requestAnimationFrame(drawStars);
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas(); drawStars();
+  </script>
+</body>
+</html>
