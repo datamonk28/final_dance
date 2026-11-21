@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#08090d">
+<meta name="theme-color" content="#08090d"><meta name="robots" content="noindex,nofollow">
 <title>The things we keep</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,6 +74,11 @@ footer{text-align:center;padding:25px;color:#625d5a;font-size:9px;letter-spacing
 @media(max-width:850px){.chapter-grid{grid-template-columns:repeat(2,1fr)}.chapter-tile{min-height:230px}.section-head{display:block}.section-head p{margin-top:18px}.chapter-detail{grid-template-columns:1fr}.chapter-detail .close-detail{grid-column:1}.modal-box{grid-template-columns:1fr;gap:15px;overflow:auto}.modal-box img{max-height:52vh}.modal-copy h3{margin:10px 0}.modal-copy p{font-size:16px}}
 @media(max-width:500px){.topbar{padding:13px 15px}.top-actions{gap:9px}.top-actions button{font-size:8px}.section{padding:75px 17px}#memory-field{min-height:520px}.chapter-grid{gap:8px}.chapter-tile{padding:15px;min-height:210px}.chapter-tile h3{font-size:25px;margin-top:42px}.chapter-tile .open-label{left:15px}.field-hint span:last-child{display:none}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.memory-photo{box-shadow:0 13px 35px #0009,0 0 42px #c8a87924;transition:box-shadow .25s,filter .25s,translate .6s ease-out}
+.memory-photo.in{animation:surface 1.8s var(--d,0s) backwards}
+@keyframes surface{from{opacity:0;filter:blur(8px);transform:translateY(30px) rotate(var(--rot)) scale(.92)}}
+#intro.leaving .intro-inner{opacity:0;transform:scale(1.07);filter:blur(8px);transition:opacity 1.1s,transform 1.1s,filter 1.1s}
+.top-actions button:hover{color:#e8d7bc}
 </style>
 </head>
 <body>
@@ -93,6 +98,7 @@ footer{text-align:center;padding:25px;color:#625d5a;font-size:9px;letter-spacing
   <div class="brand">The things we keep<span style="color:#b08e68">.</span></div>
   <div class="top-actions">
    <button id="randomMemory">Surprise me ↗</button>
+   <button id="soundBtn" aria-label="Choose or toggle background music">Sound ♪</button>
    <button id="backTop">Back to top ↑</button>
   </div>
  </nav>
@@ -137,11 +143,17 @@ footer{text-align:center;padding:25px;color:#625d5a;font-size:9px;letter-spacing
     <h2>And still,<br><em style="color:#b99a70">thank you.</em></h2>
     <p id="finalText">Thank you for the gifts, the laughter, the conversations, the comfort and the memories.
 
-Thank you for being a part of my life. I won't pretend that every moment was perfect, but there were beautiful ones, and I am grateful I got to experience them.
+Thank you for being a part of my life.
 
-This is not a request to return or an attempt to change what is. It is simply my way of honouring what was good, and letting it rest.
+I don’t want to erase what happened or pretend that it meant nothing.
 
-I wish you peace, happiness and a life that is kind to you.</p>
+There were beautiful moments, and I will always be grateful for them.
+
+Whatever tomorrow holds, I sincerely wish you happiness, peace and everything beautiful life has to offer.
+
+This is not an attempt to bring anything back. It is simply my way of saying thank you.
+
+Take care. Goodbye.</p>
     <div class="sign">With gratitude, always.</div>
     <button class="release-btn" id="release">Let the memories settle</button>
     <div id="release-message"></div>
@@ -163,6 +175,7 @@ I wish you peace, happiness and a life that is kind to you.</p>
  <div class="modal-copy" style="max-width:620px;padding:30px"><div class="mono" style="color:#b99a70">A kept message</div><h3 id="letterTitle" class="serif" style="font-size:52px"></h3><p id="letterText"></p><div class="mono" id="letterDate" style="color:#817970;margin-top:25px"></div></div>
 </div>
 <div class="toast" id="toast"></div>
+<input type="file" id="aud" accept="audio/*" hidden><audio id="au" loop></audio>
 
 <script>
 // EDIT THESE ARRAYS. Put your actual photos in the /photos folder.
@@ -201,7 +214,7 @@ function enterArchive(){
  requestAnimationFrame(()=>$("experience").classList.add("shown"));
  window.scrollTo(0,0);renderMemories();
 }
-$("begin").addEventListener("click",enterArchive);
+$("begin").addEventListener("click",()=>{$("begin").disabled=true;burst=1.6;$("intro").classList.add("leaving");setTimeout(enterArchive,1100)});
 function positions(){return memories.map((m,i)=>({x:7+(i*23)%78,y:9+(i*31)%72,rot:(i%2? -1:1)*(2+(i*7)%7)}));}
 function renderMemories(){
  field.querySelectorAll(".memory-photo,.no-photos").forEach(e=>e.remove());
@@ -209,8 +222,8 @@ function renderMemories(){
  if(!visibleMemories.length){field.innerHTML='<div class="no-photos">No photographs in this chapter yet.</div>';return;}
  visibleMemories.forEach((m,i)=>{
   const original=memories.indexOf(m),p=pos[original]||{x:10,y:10,rot:0};
-  const card=document.createElement("button");card.className="memory-photo";card.style.left=`${p.x}%`;card.style.top=`${p.y}%`;card.style.setProperty("--rot",`${p.rot}deg`);card.style.zIndex=2+i;
-  card.innerHTML=`<img src="${safe(m.src)}" alt="${safe(m.title)}" draggable="false"><span class="photo-title">${safe(m.title)}</span><span class="photo-index">${String(original+1).padStart(2,"0")}</span>`;
+  const card=document.createElement("button");card.className="memory-photo";card.style.left=`${p.x}%`;card.style.top=`${p.y}%`;card.style.setProperty("--rot",`${p.rot}deg`);card.style.zIndex=2+i;card.classList.add("in");card.style.setProperty("--d",`${Math.min(i*.12,1.5)}s`);
+  card.innerHTML=`<img loading="lazy" decoding="async" src="${safe(m.src)}" alt="${safe(m.title)}" draggable="false"><span class="photo-title">${safe(m.title)}</span><span class="photo-index">${String(original+1).padStart(2,"0")}</span>`;
   card.querySelector("img").addEventListener("error",()=>{card.querySelector("img").style.opacity=".12";card.querySelector("img").style.background="linear-gradient(135deg,#504b4b,#b7a48a)";});
   card.addEventListener("click",()=>openMemory(m));
   makeDraggable(card);field.appendChild(card);
@@ -223,10 +236,10 @@ function makeDraggable(el){
  el.addEventListener("pointerup",e=>{if(el.hasPointerCapture(e.pointerId))el.releasePointerCapture(e.pointerId);if(moved){el.dataset.dragged="yes";setTimeout(()=>delete el.dataset.dragged,100);}});
  const old=el.onclick;el.addEventListener("click",e=>{if(el.dataset.dragged==="yes"){e.stopImmediatePropagation();e.preventDefault();}});
 }
-function openMemory(m){
+let lastFocus=null;function openMemory(m){if(!$("memoryModal").classList.contains("open"))lastFocus=document.activeElement;setTimeout(()=>$("modalClose").focus(),30);
  currentIndex=memories.indexOf(m);$("modalImg").src=m.src;$("modalImg").alt=m.title;$("modalCategory").textContent=m.category||"A memory";$("modalTitle").textContent=m.title;$("modalCaption").textContent=m.caption;$("memoryModal").classList.add("open");document.body.style.overflow="hidden";
 }
-function closeModal(id){$(id).classList.remove("open");document.body.style.overflow="";}
+function closeModal(id){$(id).classList.remove("open");document.body.style.overflow="";if(lastFocus&&lastFocus.focus)lastFocus.focus();}
 $("modalClose").onclick=()=>closeModal("memoryModal");
 $("memoryModal").addEventListener("click",e=>{if(e.target===$("memoryModal"))closeModal("memoryModal");});
 function stepMemory(dir){if(!memories.length)return;currentIndex=(currentIndex+dir+memories.length)%memories.length;openMemory(memories[currentIndex]);}
@@ -241,12 +254,20 @@ gifts.forEach((g,i)=>{const el=document.createElement("article");el.className="g
 letters.forEach((l,i)=>{const b=document.createElement("button");b.className="envelope";b.innerHTML=`<span class="stamp">✉</span><h3>${safe(l.title)}</h3><small>${safe(l.date)}</small>`;b.onclick=()=>{$("letterTitle").textContent=l.title;$("letterText").textContent=l.text;$("letterDate").textContent=l.date;$("letterModal").classList.add("open");document.body.style.overflow="hidden";};$("lettersLayout").appendChild(b);});
 $("letterClose").onclick=()=>closeModal("letterModal");$("letterModal").addEventListener("click",e=>{if(e.target===$("letterModal"))closeModal("letterModal");});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal("memoryModal");closeModal("letterModal");}if(e.key==="ArrowRight"&&$("memoryModal").classList.contains("open"))stepMemory(1);if(e.key==="ArrowLeft"&&$("memoryModal").classList.contains("open"))stepMemory(-1);});
-$("release").onclick=()=>{const btn=$("release");btn.disabled=true;btn.textContent="Letting the dust settle…";const cards=[...document.querySelectorAll(".memory-photo")];cards.forEach((c,i)=>{setTimeout(()=>{c.style.transition="all 1.4s ease";c.style.opacity="0";c.style.transform="translateY(-90px) scale(.2) rotate(18deg)";},i*90);});$("release-message").textContent="The memories can stay. The rest can be released.";setTimeout(()=>{btn.disabled=false;btn.textContent="Return to the beginning";btn.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});},1700);};
+$("release").onclick=()=>{const btn=$("release");btn.disabled=true;btn.textContent="Letting the dust settle…";const cards=[...document.querySelectorAll(".memory-photo")];cards.forEach((c,i)=>{setTimeout(()=>{c.style.transition="all 1.4s ease";c.style.opacity="0";c.style.transform="translateY(-90px) scale(.2) rotate(18deg)";},i*90);});gather=1;setTimeout(()=>{gather=0},3800);$("release-message").textContent="Not everything beautiful is meant to last forever. Some things are meant to be experienced, cherished and remembered.";setTimeout(()=>{btn.disabled=false;btn.textContent="Return to the beginning";btn.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});},1700);};
 
 // Ambient drifting particles
 const canvas=$("dust"),ctx=canvas.getContext("2d");let W,H,stars=[];
 function size(){W=innerWidth;H=innerHeight;const d=Math.min(devicePixelRatio||1,2);canvas.width=W*d;canvas.height=H*d;ctx.setTransform(d,0,0,d,0,0);stars=Array.from({length:Math.min(180,Math.floor(W/7))},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.2,v:Math.random()*.28+.05,a:Math.random()*.45+.1}));}
-function animate(){ctx.clearRect(0,0,W,H);stars.forEach(s=>{ctx.fillStyle=`rgba(218,198,169,${s.a})`;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();s.y-=s.v;if(s.y<0){s.y=H;s.x=Math.random()*W;}});if(!matchMedia("(prefers-reduced-motion: reduce)").matches)requestAnimationFrame(animate);}
+let burst=0,gather=0;const still=matchMedia("(prefers-reduced-motion: reduce)").matches;function animate(){ctx.clearRect(0,0,W,H);stars.forEach(s=>{s.t=(s.t||0)+.012;ctx.fillStyle=`rgba(218,198,169,${s.a*(.65+.35*Math.sin(s.t*2))})`;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();s.y-=s.v*(1+burst*7);s.x+=Math.sin(s.t)*.15+(s.x-W/2)*.003*burst;if(gather){s.x+=(W/2-s.x)*.012*gather;s.y+=(H*.45-s.y)*.01*gather}if(s.y<0){s.y=H;s.x=Math.random()*W}});burst*=.98;if(!still)requestAnimationFrame(animate)}
 addEventListener("resize",size);size();animate();
+// Depth parallax on the photographs (mouse only)
+addEventListener("pointermove",e=>{if(still||e.pointerType==="touch")return;const nx=e.clientX/innerWidth-.5,ny=e.clientY/innerHeight-.5;document.querySelectorAll(".memory-photo").forEach((el,i)=>{const d=.4+(i*37%60)/100;el.style.translate=`${-nx*d*28}px ${-ny*d*28}px`})},{passive:true});
+// Swipe between memories on touch screens
+let sx=null;const mm=$("memoryModal");mm.addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});mm.addEventListener("touchend",e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>60)stepMemory(dx<0?1:-1)});
+// Optional music: never autoplays; the first press lets you choose a file
+const au=$("au"),sb=$("soundBtn");
+sb.onclick=()=>{if(!au.src){$("aud").click();return}if(au.paused){au.play().catch(()=>{});sb.textContent="Mute ♪"}else{au.pause();sb.textContent="Sound ♪"}};
+$("aud").onchange=e=>{const f=e.target.files[0];if(!f)return;au.src=URL.createObjectURL(f);au.play().catch(()=>{});sb.textContent="Mute ♪"};
 </script>
 </body></html>
