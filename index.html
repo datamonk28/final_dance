@@ -22,6 +22,7 @@
   --brass-soft: rgba(197, 155, 109, 0.28);
   --rule: rgba(232, 223, 209, 0.11);
   --rule-strong: rgba(232, 223, 209, 0.22);
+  --portrait-url: none;
 }
 
 * {
@@ -77,7 +78,47 @@ button:focus-visible {
   font-size: 10px;
 }
 
-/* Intro Screen — Unhurried, intimate late-night dedication */
+/* Faded Background Portrait Watermark Layer */
+.has-portrait-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.portrait-bg {
+  position: absolute;
+  inset: 0;
+  background-image: var(--portrait-url);
+  background-size: cover;
+  background-position: center 22%;
+  background-repeat: no-repeat;
+  filter: grayscale(100%) contrast(1.08);
+  opacity: 0.065;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask-image: radial-gradient(ellipse 68% 66% at 50% 48%, rgba(0, 0, 0, 1) 18%, rgba(0, 0, 0, 0.35) 56%, transparent 86%);
+  mask-image: radial-gradient(ellipse 68% 66% at 50% 48%, rgba(0, 0, 0, 1) 18%, rgba(0, 0, 0, 0.35) 56%, transparent 86%);
+  transition: opacity 0.8s ease;
+}
+
+.portrait-bg--sheet {
+  opacity: 0.075;
+  mix-blend-mode: multiply;
+  background-position: 78% 24%;
+  -webkit-mask-image: radial-gradient(ellipse 60% 72% at 76% 48%, rgba(0, 0, 0, 0.95) 15%, rgba(0, 0, 0, 0.3) 55%, transparent 85%);
+  mask-image: radial-gradient(ellipse 60% 72% at 76% 48%, rgba(0, 0, 0, 0.95) 15%, rgba(0, 0, 0, 0.3) 55%, transparent 85%);
+}
+
+.portrait-bg--modal {
+  opacity: 0.085;
+  background-position: center 20%;
+}
+
+.has-portrait-bg > *:not(.portrait-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Intro Cover Page */
 #intro {
   min-height: 100svh;
   display: grid;
@@ -165,12 +206,12 @@ h1 em {
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 25;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 18px clamp(20px, 5vw, 72px);
-  background: rgba(17, 15, 18, 0.88);
+  background: rgba(17, 15, 18, 0.9);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--rule);
 }
@@ -210,7 +251,7 @@ h1 em {
 }
 
 .section {
-  padding: clamp(88px, 12vw, 144px) clamp(20px, 6vw, 88px);
+  padding: clamp(84px, 11vw, 136px) clamp(20px, 6vw, 88px);
   max-width: 1360px;
   margin: auto;
 }
@@ -244,32 +285,37 @@ h1 em {
 }
 
 .section-head p {
-  max-width: 340px;
+  max-width: 350px;
   color: var(--ash);
   font-size: 15.5px;
   line-height: 1.78;
   margin: 0;
 }
 
-/* Filter Toolbar */
+/* Filter Toolbar & View Controls */
 .toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 0 0 28px;
+  gap: 9px;
+  margin: 0 0 24px;
   align-items: center;
 }
 
 .filter {
   border: 1px solid var(--rule);
   background: transparent;
-  padding: 8px 14px;
+  padding: 8px 13px;
   color: var(--ash);
   font-family: "IBM Plex Mono", monospace;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+
+.filter .count {
+  color: var(--ash-dim);
+  margin-left: 4px;
 }
 
 .filter:hover {
@@ -283,61 +329,91 @@ h1 em {
   background: rgba(197, 155, 109, 0.08);
 }
 
+.filter.active .count {
+  color: var(--brass);
+}
+
 .tool-spacer {
   flex: 1;
+}
+
+.view-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--rule);
+}
+
+.view-toggle button {
+  border: 0;
+  background: transparent;
+  padding: 7px 12px;
+  color: var(--ash);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.view-toggle button + button {
+  border-left: 1px solid var(--rule);
+}
+
+.view-toggle button.active {
+  background: rgba(197, 155, 109, 0.12);
+  color: var(--vellum);
 }
 
 .text-button {
   border: 0;
   background: none;
-  color: var(--brass);
+  color: var(--ash);
   font-family: "IBM Plex Mono", monospace;
   font-size: 10px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
-  padding: 8px 4px;
-  opacity: 0.85;
-  transition: opacity 0.25s ease;
+  padding: 7px 4px;
+  transition: color 0.25s ease;
 }
 
 .text-button:hover {
-  opacity: 1;
+  color: var(--brass);
 }
 
-/* 01 / The Memory Field — A Quiet Desk in Low Light */
+/* Memory Field — Scattered Table & Contact Sheet */
 #memory-field {
   position: relative;
-  min-height: 580px;
+  min-height: 600px;
   border: 1px solid var(--rule);
-  background:
-    radial-gradient(ellipse 65% 55% at 50% 45%, rgba(42, 34, 28, 0.36), transparent 75%),
-    var(--night-soft);
+  background: var(--night-soft);
   overflow: hidden;
-  transition: opacity 1.4s ease;
+  transition: min-height 0.45s ease;
 }
 
-/* Softly dim sibling prints when focusing on one */
-#memory-field:has(.memory-photo:hover) .memory-photo:not(:hover) {
-  opacity: 0.68;
+#memory-field.contact-mode {
+  min-height: auto;
+  padding: clamp(20px, 3vw, 34px);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 20px;
+  overflow: visible;
 }
 
-/* Authentic Aged Matte-Border Prints */
 .memory-photo {
   position: absolute;
-  width: clamp(134px, 16vw, 208px);
-  padding: 9px 9px 30px;
-  background: #ebe3d5;
-  border: 1px solid rgba(31, 27, 24, 0.14);
-  box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.45),
-    0 14px 34px rgba(0, 0, 0, 0.52);
+  width: clamp(128px, 15vw, 195px);
+  padding: 8px 8px 28px;
+  background: var(--vellum);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.52), 0 1px 2px rgba(0, 0, 0, 0.35);
   transform: rotate(var(--rot, 0deg));
-  transition:
-    left 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-    top 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.35s ease,
-    box-shadow 0.35s ease,
-    opacity 0.4s ease;
+  border: 0;
+  transition: transform 0.35s ease, box-shadow 0.3s ease, opacity 0.8s ease;
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -345,26 +421,34 @@ h1 em {
 }
 
 .memory-photo:hover {
-  z-index: 12 !important;
-  opacity: 1 !important;
-  transform: rotate(calc(var(--rot, 0deg) * 0.25)) translateY(-3px) scale(1.02);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.55),
-    0 22px 48px rgba(0, 0, 0, 0.68);
+  z-index: 18 !important;
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.68);
 }
 
-.memory-photo.is-dragging {
-  transition: box-shadow 0.15s ease, transform 0.15s ease !important;
-  transform: rotate(0deg) scale(1.04) !important;
+.memory-photo:active {
   cursor: grabbing;
-  z-index: 25 !important;
+}
+
+#memory-field.contact-mode .memory-photo {
+  position: relative;
+  left: auto !important;
+  top: auto !important;
+  width: 100%;
+  transform: none;
+  cursor: pointer;
+  touch-action: auto;
+}
+
+#memory-field.contact-mode .memory-photo:hover {
+  transform: translateY(-3px);
 }
 
 .photo-frame {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 5;
-  background: #231f1d;
+  background: #231f20;
   overflow: hidden;
 }
 
@@ -373,20 +457,21 @@ h1 em {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: contrast(0.98) saturate(0.92);
+  filter: sepia(0.08) contrast(0.98);
+  transition: opacity 0.3s ease;
 }
 
-/* Quiet, understated fallback plate when local photo file is not yet added */
+/* Typographic Archival Fallback Plate when local image file is missing */
 .photo-fallback {
   position: absolute;
   inset: 0;
   display: none;
-  padding: 14px;
-  border: 1px solid rgba(232, 223, 209, 0.14);
-  background: linear-gradient(160deg, #25201e 0%, #191615 100%);
-  color: var(--ash);
   flex-direction: column;
   justify-content: space-between;
+  padding: 13px;
+  background: linear-gradient(165deg, #242022 0%, #171417 100%);
+  border: 1px solid rgba(232, 223, 209, 0.08);
+  color: var(--vellum);
 }
 
 .photo-frame.missing img {
@@ -397,32 +482,38 @@ h1 em {
   display: flex;
 }
 
-.photo-fallback span:first-child {
+.fallback-tag {
   font-family: "IBM Plex Mono", monospace;
   font-size: 8.5px;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--brass);
-  opacity: 0.8;
 }
 
-.photo-fallback span:last-child {
+.fallback-title {
   font-family: "Cormorant Garamond", Georgia, serif;
   font-style: italic;
-  font-size: 16px;
-  line-height: 1.25;
+  font-size: 18px;
+  line-height: 1.2;
   color: var(--vellum);
-  opacity: 0.78;
+}
+
+.fallback-file {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: var(--ash-dim);
+  word-break: break-all;
 }
 
 .memory-photo .photo-title {
   display: block;
   color: var(--ink-dark);
+  text-align: left;
   font-family: "Cormorant Garamond", Georgia, serif;
-  font-style: italic;
   font-weight: 500;
-  font-size: 15.5px;
-  padding: 8px 2px 0;
+  font-size: 15px;
+  padding: 8px 34px 0 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -430,10 +521,18 @@ h1 em {
 
 .memory-photo .photo-index {
   position: absolute;
-  right: 10px;
+  right: 9px;
   bottom: 9px;
-  color: #786d62;
-  font: 9px "IBM Plex Mono", monospace;
+  color: #776d63;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+}
+
+.memory-photo.settled {
+  opacity: 0.22;
+  filter: grayscale(0.4);
+  pointer-events: none;
 }
 
 .no-photos {
@@ -442,18 +541,20 @@ h1 em {
   display: grid;
   place-items: center;
   text-align: center;
-  padding: 32px;
+  padding: 30px;
   color: var(--ash);
   font-family: "Cormorant Garamond", Georgia, serif;
   font-style: italic;
   font-size: 24px;
-  line-height: 1.6;
   pointer-events: none;
 }
 
 .field-hint {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  align-items: center;
+  gap: 12px;
   color: var(--ash-dim);
   font-family: "IBM Plex Mono", monospace;
   font-size: 9.5px;
@@ -462,179 +563,162 @@ h1 em {
   padding: 14px 2px 0;
 }
 
+.spread-btn {
+  border: 0;
+  border-bottom: 1px solid var(--brass-soft);
+  background: none;
+  color: var(--brass);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 3px 0;
+  transition: border-color 0.25s ease;
+}
+
+.spread-btn:hover {
+  border-bottom-color: var(--brass);
+}
+
 .rule {
   border: 0;
   border-top: 1px solid var(--rule);
   margin: 0;
 }
 
-/* Quiet Interlude */
+/* Interlude Quote with Faded Background Portrait */
 .interlude {
-  padding: clamp(110px, 15vw, 175px) 24px;
+  padding: clamp(100px, 14vw, 165px) 24px;
   text-align: center;
-}
-
-.interlude-line {
-  width: 44px;
-  height: 1px;
-  background: var(--brass-soft);
-  margin: 0 auto 28px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--night-soft);
 }
 
 .interlude .mono {
-  color: var(--ash);
+  color: var(--brass);
+  opacity: 0.85;
 }
 
 .interlude blockquote {
-  max-width: 740px;
-  margin: 22px auto 0;
+  max-width: 780px;
+  margin: 24px auto 0;
   font-family: "Cormorant Garamond", Georgia, serif;
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(32px, 5vw, 56px);
-  line-height: 1.18;
+  font-size: clamp(32px, 5vw, 58px);
+  line-height: 1.16;
   color: var(--vellum);
 }
 
-/* 02 / The Chapters — Intimate Literary Volume Index */
-.chapters-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-}
-
-.chapter-grid {
-  display: flex;
-  flex-direction: column;
+/* Chapters — Vertical Literary Index + Warm Reading Sheet with Portrait Watermark */
+.chapter-index {
   border-top: 1px solid var(--rule);
 }
 
-.chapter-tile {
+.chapter-row {
+  width: 100%;
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr) auto;
+  grid-template-columns: 190px 1fr auto;
   align-items: baseline;
   gap: 24px;
-  width: 100%;
+  padding: 26px 8px;
+  background: transparent;
   border: 0;
   border-bottom: 1px solid var(--rule);
-  background: transparent;
-  padding: 26px 8px;
   text-align: left;
-  transition: background 0.3s ease, padding-left 0.3s ease;
+  transition: background 0.25s ease, padding-left 0.25s ease;
 }
 
-.chapter-tile:hover {
+.chapter-row:hover {
   background: rgba(232, 223, 209, 0.025);
-  padding-left: 16px;
+  padding-left: 14px;
 }
 
-.chapter-tile.active {
+.chapter-row.active {
   background: rgba(197, 155, 109, 0.06);
-  padding-left: 16px;
+  padding-left: 14px;
 }
 
-.chapter-tile .num {
+.chapter-row .num {
   color: var(--brass);
-  opacity: 0.88;
 }
 
-.chapter-tile-main h3 {
+.chapter-row h3 {
   font-family: "Cormorant Garamond", Georgia, serif;
   font-weight: 400;
-  font-size: clamp(28px, 3.4vw, 38px);
+  font-size: clamp(26px, 3.2vw, 36px);
   line-height: 1.1;
-  margin: 0 0 6px;
-  color: var(--vellum);
-  transition: color 0.25s ease;
-}
-
-.chapter-tile:hover .chapter-tile-main h3,
-.chapter-tile.active .chapter-tile-main h3 {
-  color: var(--brass);
-}
-
-.chapter-tile-main p {
-  font-size: 15px;
-  line-height: 1.65;
-  color: var(--ash);
   margin: 0;
+  color: var(--vellum);
 }
 
-.chapter-tile .open-label {
-  color: var(--ash-dim);
+.chapter-row .open-label {
+  color: var(--ash);
   font-family: "IBM Plex Mono", monospace;
   font-size: 9.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  white-space: nowrap;
   transition: color 0.25s ease;
 }
 
-.chapter-tile:hover .open-label,
-.chapter-tile.active .open-label {
+.chapter-row:hover .open-label,
+.chapter-row.active .open-label {
   color: var(--brass);
 }
 
-/* Unfolded Cream Reading Sheet */
 .chapter-detail {
   display: none;
-  margin-top: 8px;
-  padding: clamp(32px, 5vw, 54px);
+  margin-top: 28px;
+  padding: clamp(32px, 5vw, 56px);
   background: var(--vellum);
   color: var(--ink-dark);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
   grid-template-columns: 0.85fr 1.15fr;
-  gap: clamp(24px, 4vw, 48px);
+  gap: 36px;
   align-items: start;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
 .chapter-detail.open {
   display: grid;
-  animation: unfoldPage 0.45s ease;
+  animation: pageReveal 0.45s ease;
 }
 
-@keyframes unfoldPage {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.chapter-detail .sheet-kicker {
+  color: #7d6245;
+  margin-bottom: 12px;
 }
 
 .chapter-detail h3 {
   font-family: "Cormorant Garamond", Georgia, serif;
   font-weight: 500;
-  font-size: clamp(32px, 4vw, 44px);
+  font-size: clamp(32px, 4vw, 46px);
   line-height: 1.05;
-  margin: 14px 0 0;
+  margin: 0;
   color: var(--ink-dark);
 }
 
 .chapter-detail p {
   font-family: "Newsreader", Georgia, serif;
-  font-size: 18.5px;
+  font-size: 18px;
   line-height: 1.85;
-  white-space: pre-line;
   margin: 0;
-  color: #2c2622;
+  color: #2d2722;
+  white-space: pre-line;
 }
 
 .chapter-detail .close-detail {
   justify-self: end;
   grid-column: 1 / -1;
   border: 0;
-  border-bottom: 1px solid rgba(31, 27, 24, 0.28);
+  border-bottom: 1px solid rgba(31, 27, 24, 0.25);
   background: none;
-  padding: 4px 0;
-  color: #5a5047;
+  color: #5b4f45;
   font-family: "IBM Plex Mono", monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
   font-size: 9.5px;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 0;
 }
 
 .chapter-detail .close-detail:hover {
@@ -642,47 +726,60 @@ h1 em {
   border-bottom-color: var(--ink-dark);
 }
 
-/* 03 / Objects with Stories — Quiet Keepsake Cards */
+@keyframes pageReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Objects With Stories (Gifts) — With Faded Portrait Background */
+.gifts-section {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--night-soft);
+}
+
 .gift-area {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 22px;
+  gap: 24px;
 }
 
 .gift {
   border: 1px solid var(--rule);
-  border-top: 1px solid var(--brass-soft);
-  background: var(--night-soft);
-  min-height: 250px;
-  padding: 32px 28px;
-  text-align: left;
+  background: rgba(17, 15, 18, 0.78);
+  backdrop-filter: blur(4px);
+  min-height: 270px;
+  padding: 34px 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: border-color 0.35s ease, background 0.35s ease;
+  transition: border-color 0.3s ease, background 0.3s ease;
 }
 
 .gift:hover {
   border-color: var(--rule-strong);
-  background: var(--night-elevated);
 }
 
-.gift.is-open {
+.gift.unwrapped {
   border-color: var(--brass-soft);
-  background: var(--night-elevated);
+  background: rgba(29, 25, 31, 0.88);
 }
 
 .gift-num {
   color: var(--brass);
-  opacity: 0.78;
   margin-bottom: 18px;
-  display: block;
 }
 
 .gift h3 {
   font-family: "Cormorant Garamond", Georgia, serif;
   font-weight: 400;
-  font-size: 30px;
+  font-size: 29px;
   line-height: 1.12;
   margin: 0 0 14px;
   color: var(--vellum);
@@ -693,15 +790,11 @@ h1 em {
   color: var(--ash);
   line-height: 1.78;
   margin: 0;
-  transition: color 0.3s ease;
 }
 
-.gift.is-open p {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-style: italic;
-  font-size: 20px;
-  line-height: 1.65;
+.gift.unwrapped p {
   color: var(--vellum);
+  font-style: italic;
 }
 
 .gift button {
@@ -716,63 +809,56 @@ h1 em {
   font-size: 9.5px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  transition: border-color 0.25s ease, color 0.25s ease;
+  transition: border-color 0.25s ease;
 }
 
 .gift button:hover {
-  color: var(--vellum);
-  border-bottom-color: var(--vellum);
+  border-bottom-color: var(--brass);
 }
 
-/* 04 / The Words — Understated Folded Stationery Cards */
+/* The Words (Letters) — With Faded Portrait Background */
+.letters-section {
+  background: var(--night);
+}
+
 .letters-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
 }
 
 .envelope {
-  min-height: 205px;
+  min-height: 210px;
   border: 1px solid var(--rule);
-  background: var(--night-soft);
-  position: relative;
-  padding: 28px;
+  background: rgba(23, 20, 25, 0.82);
+  backdrop-filter: blur(4px);
+  padding: 32px 28px;
   text-align: left;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
-}
-
-/* Delicate inner stationery hairline */
-.envelope::before {
-  content: "";
-  position: absolute;
-  inset: 7px;
-  border: 1px solid rgba(232, 223, 209, 0.05);
-  pointer-events: none;
+  transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
 }
 
 .envelope:hover {
   transform: translateY(-3px);
   border-color: var(--brass-soft);
-  background: var(--night-elevated);
+  background: rgba(29, 25, 31, 0.9);
 }
 
-.envelope-head {
+.envelope-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: var(--brass);
-  opacity: 0.8;
 }
 
 .envelope h3 {
   font-family: "Cormorant Garamond", Georgia, serif;
   font-weight: 400;
-  font-size: 28px;
-  line-height: 1.15;
-  margin: 32px 0 8px;
+  font-size: 29px;
+  line-height: 1.12;
+  margin: 28px 0 8px;
   color: var(--vellum);
 }
 
@@ -782,31 +868,29 @@ h1 em {
   font-size: 9.5px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  display: block;
 }
 
-/* 05 / The Last Page — Quiet Stillness */
+/* Final Room — Deep, Quiet Closing with Faded Background Portrait */
 .final-room {
-  min-height: 88vh;
+  min-height: 86vh;
   display: grid;
   place-items: center;
   text-align: center;
   padding: clamp(100px, 14vw, 160px) 24px;
-  position: relative;
-  transition: background-color 1.6s ease;
+  border-top: 1px solid var(--rule);
+  background: var(--night-soft);
 }
 
 .final-inner {
   max-width: 640px;
-  position: relative;
 }
 
 .final-inner h2 {
   font-family: "Cormorant Garamond", Georgia, serif;
   font-weight: 400;
-  font-size: clamp(52px, 8.5vw, 98px);
+  font-size: clamp(50px, 8vw, 94px);
   line-height: 0.9;
-  margin: 20px 0 38px;
+  margin: 22px 0 40px;
   color: var(--vellum);
 }
 
@@ -819,7 +903,7 @@ h1 em {
   font-family: "Newsreader", Georgia, serif;
   font-size: 18.5px;
   line-height: 1.92;
-  color: #cfc5b8;
+  color: var(--vellum-warm);
   white-space: pre-line;
   margin: 0;
 }
@@ -833,21 +917,22 @@ h1 em {
 }
 
 .release-btn {
-  margin-top: 40px;
-  border: 1px solid var(--brass-soft);
+  margin-top: 44px;
+  border: 0;
+  border-bottom: 1px solid var(--brass-soft);
   background: transparent;
-  padding: 13px 22px;
-  color: var(--vellum);
+  padding: 8px 4px;
+  color: var(--ash);
   font-family: "IBM Plex Mono", monospace;
-  font-size: 9.5px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  transition: border-color 0.3s ease, color 0.3s ease, opacity 0.5s ease;
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 
 .release-btn:hover {
-  border-color: var(--brass);
   color: var(--brass);
+  border-bottom-color: var(--brass);
 }
 
 #release-message {
@@ -855,26 +940,19 @@ h1 em {
   color: var(--brass);
   font-family: "Cormorant Garamond", Georgia, serif;
   font-style: italic;
-  font-size: 22px;
+  font-size: 21px;
   margin-top: 24px;
   opacity: 0;
-  transition: opacity 1.2s ease;
+  transition: opacity 1s ease;
 }
 
 #release-message.visible {
   opacity: 1;
 }
 
-/* Settled calm state when "Let the memories settle" is pressed */
-body.is-settled #memory-field .memory-photo {
-  opacity: 0.16 !important;
-  filter: saturate(0.4);
-  transition: opacity 1.8s ease, filter 1.8s ease;
-}
-
 footer {
   text-align: center;
-  padding: 28px 20px;
+  padding: 32px 20px;
   color: var(--ash-dim);
   font-family: "IBM Plex Mono", monospace;
   font-size: 9.5px;
@@ -883,72 +961,44 @@ footer {
   border-top: 1px solid var(--rule);
 }
 
-/* Modals — Serene Dark Vellum Reading Spaces */
+/* Modals — Lightbox & Letter Sheet */
 .modal {
   position: fixed;
   inset: 0;
-  z-index: 30;
-  background: rgba(11, 10, 12, 0.92);
+  z-index: 35;
+  background: rgba(11, 10, 12, 0.94);
   display: none;
   place-items: center;
   padding: 24px;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(10px);
 }
 
 .modal.open {
   display: grid;
-  animation: modalFade 0.3s ease;
-}
-
-@keyframes modalFade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  animation: pageReveal 0.28s ease;
 }
 
 .modal-box {
-  max-width: 960px;
+  max-width: 1020px;
   width: 100%;
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
-  gap: clamp(24px, 5vw, 48px);
+  gap: 44px;
   align-items: center;
   max-height: 90vh;
 }
 
-.modal-print-wrap {
-  padding: 12px;
-  background: #ebe3d5;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
-  display: grid;
-  place-items: center;
-}
-
-.modal-box img {
-  max-width: 100%;
-  max-height: 74vh;
-  object-fit: contain;
-  display: block;
-}
-
-.modal-print-fallback {
+.modal-media {
+  background: var(--vellum);
+  padding: 14px 14px 36px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7);
+  max-width: 460px;
   width: 100%;
+  margin: auto;
+}
+
+.modal-media .photo-frame {
   aspect-ratio: 4 / 5;
-  max-height: 68vh;
-  background: linear-gradient(160deg, #25201e 0%, #191615 100%);
-  border: 1px solid rgba(232, 223, 209, 0.16);
-  padding: 28px;
-  display: none;
-  flex-direction: column;
-  justify-content: space-between;
-  color: var(--vellum);
-}
-
-.modal-print-wrap.missing img {
-  display: none;
-}
-
-.modal-print-wrap.missing .modal-print-fallback {
-  display: flex;
 }
 
 .modal-copy .mono {
@@ -958,14 +1008,14 @@ footer {
 .modal-copy h3 {
   font-family: "Cormorant Garamond", Georgia, serif;
   font-weight: 400;
-  font-size: clamp(34px, 4.6vw, 54px);
-  line-height: 0.98;
-  margin: 16px 0 20px;
+  font-size: clamp(34px, 4.5vw, 54px);
+  line-height: 1;
+  margin: 16px 0 22px;
   color: var(--vellum);
 }
 
 .modal-copy p {
-  color: #c6bcb0;
+  color: var(--vellum-warm);
   font-family: "Newsreader", Georgia, serif;
   font-size: 18px;
   line-height: 1.85;
@@ -975,110 +1025,103 @@ footer {
 
 .modal-close {
   position: absolute;
-  right: 24px;
-  top: 22px;
-  border: 1px solid var(--rule-strong);
+  right: 28px;
+  top: 24px;
+  border: 0;
   background: none;
-  color: var(--vellum);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 18px;
-  transition: border-color 0.25s ease, color 0.25s ease;
+  color: var(--ash);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 8px;
+  z-index: 2;
 }
 
 .modal-close:hover {
-  border-color: var(--brass);
-  color: var(--brass);
+  color: var(--vellum);
 }
 
 .modal-nav {
   display: flex;
-  gap: 14px;
-  margin-top: 30px;
+  gap: 22px;
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
 }
 
 .modal-nav button {
   background: none;
-  border: 1px solid var(--rule-strong);
-  padding: 10px 15px;
-  color: var(--vellum);
+  border: 0;
+  padding: 4px 0;
+  color: var(--ash);
   font-family: "IBM Plex Mono", monospace;
-  font-size: 9.5px;
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  transition: border-color 0.25s ease, color 0.25s ease;
+  letter-spacing: 0.13em;
+  transition: color 0.25s ease;
 }
 
 .modal-nav button:hover {
-  border-color: var(--brass);
   color: var(--brass);
 }
 
-/* Distraction-free Letter Reading Sheet */
+/* Letter Reading Sheet inside Modal */
 .letter-sheet {
-  max-width: 600px;
+  max-width: 620px;
   width: 100%;
-  padding: clamp(32px, 6vw, 56px);
-  background: var(--night-soft);
-  border: 1px solid var(--rule-strong);
+  padding: clamp(34px, 5vw, 56px);
+  background: var(--vellum);
+  color: var(--ink-dark);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.7);
-  position: relative;
 }
 
-.letter-sheet::before {
-  content: "";
-  position: absolute;
-  inset: 9px;
-  border: 1px solid rgba(232, 223, 209, 0.06);
-  pointer-events: none;
-}
-
-.letter-sheet .mono-top {
-  color: var(--brass);
+.letter-sheet .mono {
+  color: #7d6245;
 }
 
 .letter-sheet h3 {
   font-family: "Cormorant Garamond", Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(34px, 4.8vw, 48px);
-  line-height: 1.05;
-  margin: 18px 0 24px;
-  color: var(--vellum);
+  font-weight: 500;
+  font-size: clamp(32px, 4.5vw, 46px);
+  line-height: 1.06;
+  margin: 14px 0 24px;
+  color: var(--ink-dark);
 }
 
 .letter-sheet p {
-  color: #d2c8bc;
   font-family: "Newsreader", Georgia, serif;
-  font-size: 19px;
-  line-height: 1.9;
+  font-size: 18px;
+  line-height: 1.88;
+  color: #2c2621;
   white-space: pre-line;
   margin: 0;
 }
 
 .letter-sheet .letter-foot {
-  color: var(--ash-dim);
-  margin-top: 34px;
-  padding-top: 16px;
-  border-top: 1px solid var(--rule);
+  margin-top: 32px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(31, 27, 24, 0.14);
+  color: #6d6156;
 }
 
 .toast {
   position: fixed;
   bottom: 24px;
   left: 50%;
-  transform: translate(-50%, 16px);
+  transform: translate(-50%, 14px);
   background: var(--vellum);
   color: var(--ink-dark);
-  padding: 11px 18px;
+  padding: 10px 18px;
   font-family: "IBM Plex Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   opacity: 0;
   pointer-events: none;
-  transition: 0.35s ease;
-  z-index: 50;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 45;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
 }
 
 .toast.show {
@@ -1086,56 +1129,63 @@ footer {
   transform: translate(-50%, 0);
 }
 
-@media (max-width: 850px) {
+@media (max-width: 860px) {
   .section-head {
     display: block;
   }
   .section-head p {
     margin-top: 18px;
   }
-  .chapter-tile {
-    grid-template-columns: 1fr;
-    gap: 8px;
+  .chapter-row {
+    grid-template-columns: 1fr auto;
+    gap: 8px 16px;
+  }
+  .chapter-row .num {
+    grid-column: 1 / -1;
   }
   .chapter-detail {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
   .chapter-detail .close-detail {
     grid-column: 1;
   }
   .modal-box {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 24px;
     overflow-y: auto;
+    padding: 16px 0;
   }
-  .modal-box img {
-    max-height: 48vh;
+  .modal-media {
+    max-width: 300px;
   }
 }
 
 @media (max-width: 520px) {
   .topbar {
-    padding: 14px 18px;
+    padding: 15px 18px;
   }
   .top-actions {
     gap: 14px;
-  }
-  .top-actions button {
-    font-size: 9px;
   }
   .section {
     padding: 76px 18px;
   }
   #memory-field {
-    min-height: 500px;
+    min-height: 520px;
   }
-  .field-hint span:last-child {
+  #memory-field.contact-mode {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 14px;
+  }
+  .field-hint span:first-child {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *, *:before, *:after {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
@@ -1144,350 +1194,622 @@ footer {
 </style>
 </head>
 <body>
-<div class="paper-grain"></div>
+<div class="paper-grain" aria-hidden="true"></div>
 
 <header id="intro">
-  <div class="intro-inner">
-    <div class="mono kicker">An archive of the things we keep</div>
-    <h1>The things<br><em>we keep.</em></h1>
-    <p class="intro-copy">Not every story needs to be reopened.<br>Some deserve a quiet place to be remembered.</p>
-    <button class="enter" id="begin">Open the archive &nbsp;&nearr;</button>
-  </div>
-  <div class="mono tiny-note">Best experienced slowly · sound optional</div>
+ <div class="intro-inner">
+  <div class="mono kicker">An archive of the things we keep</div>
+  <h1>The things<br><em>we keep.</em></h1>
+  <p class="intro-copy">Not every story needs to be reopened.<br>Some deserve a quiet place to be remembered.</p>
+  <button class="enter" id="begin">Open the archive &nbsp;→</button>
+ </div>
+ <div class="mono tiny-note">Best experienced slowly</div>
 </header>
 
 <div id="experience">
-  <nav class="topbar">
-    <div class="brand">The things we keep<span>.</span></div>
-    <div class="top-actions">
-      <button id="randomMemory">Surprise me &nearr;</button>
-      <button id="backTop">Back to top &uarr;</button>
+ <nav class="topbar">
+  <div class="brand">The things we keep<span>.</span></div>
+  <div class="top-actions">
+   <button id="randomMemory">A random memory</button>
+   <button id="backTop">Top ↑</button>
+  </div>
+ </nav>
+
+ <main>
+  <!-- 01 / THE MEMORY FIELD -->
+  <section class="section" id="archive">
+   <div class="section-head">
+    <div>
+     <div class="mono eyebrow">01 / The memory field</div>
+     <h2>Pick a thread.<br><i>Follow it somewhere.</i></h2>
     </div>
-  </nav>
+    <p>Eighty photographs gathered across four chapters—scattered like prints on a quiet table, or laid out on a contact sheet.</p>
+   </div>
 
-  <main>
-    <section class="section" id="archive">
-      <div class="section-head">
-        <div>
-          <div class="mono eyebrow">01 / The memory field</div>
-          <h2>Pick a thread.<br><i>Follow it somewhere.</i></h2>
-        </div>
-        <p>These photographs are scattered like things found in an old drawer. Move them around. Pick one up. Stay with it for a moment.</p>
-      </div>
-      <div class="toolbar" id="filters">
-        <button class="filter active" data-filter="All">All fragments</button>
-        <button class="filter" data-filter="Gifts">Gifts</button>
-        <button class="filter" data-filter="Birthdays">Birthdays</button>
-        <button class="filter" data-filter="Friendship">Friendship</button>
-        <button class="filter" data-filter="Little things">Little things</button>
-        <span class="tool-spacer"></span>
-        <button class="text-button" id="scatterAgain">&#8635; Reshuffle</button>
-      </div>
-      <div id="memory-field">
-        <div class="no-photos">The photographs will find their place here.<br><small style="font:10px 'IBM Plex Mono';letter-spacing:.15em;text-transform:uppercase;color:#9a9188">Add your images in the memories list</small></div>
-      </div>
-      <div class="field-hint">
-        <span>Drag the photographs to rearrange your constellation</span>
-        <span>Tap a photograph to open its memory</span>
-      </div>
-    </section>
-
-    <div class="interlude">
-      <div class="interlude-line"></div>
-      <div class="mono">A note from this side of time</div>
-      <blockquote>“Some of the smallest moments<br>leave the longest shadows.”</blockquote>
+   <div class="toolbar" id="filters">
+    <button class="filter active" data-filter="All">All <span class="count" id="count-All">80</span></button>
+    <button class="filter" data-filter="My Firsts">My Firsts <span class="count" id="count-My Firsts">30</span></button>
+    <button class="filter" data-filter="My Stress buster">My Stress buster <span class="count" id="count-My Stress buster">10</span></button>
+    <button class="filter" data-filter="My favourites">My favourites <span class="count" id="count-My favourites">20</span></button>
+    <button class="filter" data-filter="we">we <span class="count" id="count-we">20</span></button>
+    <span class="tool-spacer"></span>
+    <div class="view-controls">
+     <div class="view-toggle" role="group" aria-label="Archive layout">
+      <button type="button" class="active" id="modeScatter">Scattered table</button>
+      <button type="button" id="modeContact">Contact sheet</button>
+     </div>
+     <button class="text-button" id="scatterAgain">↻ Reshuffle</button>
     </div>
+   </div>
 
-    <section class="section" id="chapters">
-      <div class="section-head">
-        <div>
-          <div class="mono eyebrow">02 / The chapters</div>
-          <h2>Little things.<br><i>A whole world.</i></h2>
-        </div>
-        <p>Choose a chapter. Each one opens like a page from a personal scrapbook.</p>
-      </div>
-      <div class="chapters-container">
-        <div class="chapter-grid" id="chapterGrid"></div>
-        <div class="chapter-detail" id="chapterDetail">
-          <div>
-            <div class="mono" id="detailTag" style="color:#7d6245">A page from the archive</div>
-            <h3 id="detailTitle"></h3>
-          </div>
-          <p id="detailText"></p>
-          <button class="close-detail" id="closeDetail">Close this page &times;</button>
-        </div>
-      </div>
-    </section>
+   <div id="memory-field">
+    <div class="no-photos">The photographs will find their place here.</div>
+   </div>
 
-    <hr class="rule">
+   <div class="field-hint">
+    <span id="hintLeft">Drag any print to rearrange · Click to read its note</span>
+    <button type="button" class="spread-btn" id="toggleSpread">Show all 80 prints on table</button>
+   </div>
+  </section>
 
-    <section class="section" id="gifts">
-      <div class="section-head">
-        <div>
-          <div class="mono eyebrow">03 / Objects with stories</div>
-          <h2>Things I can<br><i>still remember.</i></h2>
-        </div>
-        <p>Open each little box. A gift is an object; the thought behind it is the memory.</p>
-      </div>
-      <div class="gift-area" id="giftArea"></div>
-    </section>
+  <!-- INTERLUDE QUOTE (with faded background portrait) -->
+  <div class="interlude has-portrait-bg">
+   <div class="portrait-bg" aria-hidden="true"></div>
+   <div class="mono">A note from this side of time</div>
+   <blockquote>“Some of the smallest moments<br>leave the longest shadows.”</blockquote>
+  </div>
 
-    <hr class="rule">
+  <!-- 02 / THE CHAPTERS (Reading sheet has faded background portrait) -->
+  <section class="section" id="chapters">
+   <div class="section-head">
+    <div>
+     <div class="mono eyebrow">02 / The chapters</div>
+     <h2>Little things.<br><i>A whole world.</i></h2>
+    </div>
+    <p>Choose a chapter. Each one opens like a page from a personal notebook.</p>
+   </div>
 
-    <section class="section" id="letters">
-      <div class="section-head">
-        <div>
-          <div class="mono eyebrow">04 / The words</div>
-          <h2>Unsent, but<br><i>not forgotten.</i></h2>
-        </div>
-        <p>Tap an envelope to unfold a message. The words stay in their original voice.</p>
-      </div>
-      <div class="letters-layout" id="lettersLayout"></div>
-    </section>
+   <div class="chapter-index" id="chapterGrid"></div>
 
-    <section class="final-room" id="final">
-      <div class="final-inner">
-        <div class="mono eyebrow">05 / The last page</div>
-        <h2>And still,<br><em>thank you.</em></h2>
-        <p id="finalText">Thank you for the gifts, the laughter, the conversations, the comfort and the memories.
+   <div class="chapter-detail has-portrait-bg" id="chapterDetail">
+    <div class="portrait-bg portrait-bg--sheet" aria-hidden="true"></div>
+    <div>
+     <div class="mono sheet-kicker" id="detailTag">A page from the archive</div>
+     <h3 id="detailTitle"></h3>
+    </div>
+    <p id="detailText"></p>
+    <button class="close-detail" id="closeDetail">Close this page ×</button>
+   </div>
+  </section>
+
+  <!-- 03 / OBJECTS WITH STORIES (with faded background portrait) -->
+  <section class="gifts-section has-portrait-bg" id="gifts">
+   <div class="portrait-bg" aria-hidden="true"></div>
+   <div class="section">
+    <div class="section-head">
+     <div>
+      <div class="mono eyebrow">03 / Objects with stories</div>
+      <h2>Things I can<br><i>still remember.</i></h2>
+     </div>
+     <p>Open each note. A gift is an object; the thought behind it is what stays.</p>
+    </div>
+    <div class="gift-area" id="giftArea"></div>
+   </div>
+  </section>
+
+  <!-- 04 / THE WORDS (with faded background portrait) -->
+  <section class="letters-section has-portrait-bg" id="letters">
+   <div class="portrait-bg" aria-hidden="true"></div>
+   <div class="section">
+    <div class="section-head">
+     <div>
+      <div class="mono eyebrow">04 / The words</div>
+      <h2>Unsent, but<br><i>not forgotten.</i></h2>
+     </div>
+     <p>Select a note to unfold its words. Everything remains in its original voice.</p>
+    </div>
+    <div class="letters-layout" id="lettersLayout"></div>
+   </div>
+  </section>
+
+  <!-- 05 / THE LAST PAGE (with faded background portrait) -->
+  <section class="final-room has-portrait-bg" id="final">
+   <div class="portrait-bg" aria-hidden="true"></div>
+   <div class="final-inner">
+    <div class="mono eyebrow">05 / The last page</div>
+    <h2>And still,<br><em>thank you.</em></h2>
+    <p id="finalText">Thank you for the gifts, the laughter, the conversations, the comfort and the memories.
 
 Thank you for being a part of my life. I won't pretend that every moment was perfect, but there were beautiful ones, and I am grateful I got to experience them.
 
 This is not a request to return or an attempt to change what is. It is simply my way of honouring what was good, and letting it rest.
 
 I wish you peace, happiness and a life that is kind to you.</p>
-        <div class="sign">With gratitude, always.</div>
-        <button class="release-btn" id="release">Let the memories settle</button>
-        <div id="release-message"></div>
-      </div>
-    </section>
-  </main>
+    <div class="sign">With gratitude, always.</div>
+    <button class="release-btn" id="release">Let the memories settle</button>
+    <div id="release-message"></div>
+   </div>
+  </section>
+ </main>
 
-  <footer>A private archive in spirit · made with care</footer>
+ <footer>A private archive in spirit · made with care</footer>
 </div>
 
+<!-- PHOTO LIGHTBOX MODAL -->
 <div class="modal" id="memoryModal" role="dialog" aria-modal="true" aria-label="Memory detail">
-  <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
-  <div class="modal-box">
-    <div class="modal-print-wrap" id="modalPrintWrap">
-      <img id="modalImg" alt="">
-      <div class="modal-print-fallback">
-        <span class="mono" style="color:var(--brass)" id="modalFallbackNum"></span>
-        <span class="serif" style="font-style:italic;font-size:26px;line-height:1.25" id="modalFallbackTitle"></span>
-      </div>
+ <button class="modal-close" id="modalClose" aria-label="Close">Close ×</button>
+ <div class="modal-box">
+  <div class="modal-media">
+   <div class="photo-frame" id="modalFrame">
+    <img id="modalImg" alt="">
+    <div class="photo-fallback" aria-hidden="true">
+     <span class="fallback-tag" id="modalFallbackTag"></span>
+     <span class="fallback-title" id="modalFallbackTitle"></span>
+     <span class="fallback-file" id="modalFallbackFile"></span>
     </div>
-    <div class="modal-copy">
-      <div class="mono" id="modalCategory"></div>
-      <h3 id="modalTitle"></h3>
-      <p id="modalCaption"></p>
-      <div class="modal-nav">
-        <button id="prevMemory">&larr; Previous</button>
-        <button id="nextMemory">Next &rarr;</button>
-      </div>
-    </div>
+   </div>
   </div>
+  <div class="modal-copy">
+   <div class="mono" id="modalCategory"></div>
+   <h3 id="modalTitle"></h3>
+   <p id="modalCaption"></p>
+   <div class="modal-nav">
+    <button id="prevMemory">← Previous</button>
+    <button id="nextMemory">Next →</button>
+   </div>
+  </div>
+ </div>
 </div>
 
+<!-- LETTER MODAL (with faded background portrait) -->
 <div class="modal" id="letterModal" role="dialog" aria-modal="true" aria-label="Message">
-  <button class="modal-close" id="letterClose" aria-label="Close">&times;</button>
-  <div class="letter-sheet">
-    <div class="mono mono-top">A kept message</div>
-    <h3 id="letterTitle"></h3>
-    <p id="letterText"></p>
-    <div class="mono letter-foot" id="letterDate"></div>
-  </div>
+ <button class="modal-close" id="letterClose" aria-label="Close">Close ×</button>
+ <div class="letter-sheet has-portrait-bg">
+  <div class="portrait-bg portrait-bg--sheet portrait-bg--modal" aria-hidden="true"></div>
+  <div class="mono">A kept message</div>
+  <h3 id="letterTitle"></h3>
+  <p id="letterText"></p>
+  <div class="mono letter-foot" id="letterDate"></div>
+ </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// EDIT THESE ARRAYS. Put your actual photos in the /photos folder.
-// Keep captions to two or three sincere lines. No memories are invented by the page.
+// ============================================================================
+// 1. FADED BACKGROUND PORTRAIT FOR ALL MESSAGE SECTIONS
+// Place your portrait image at "photos/person-portrait.jpg" (or change path below).
+// If the local image file isn't found yet, a subtle, quiet silhouette fallback is applied.
+// ============================================================================
+const personPortrait = "photos/person-portrait.jpg";
+
+// ============================================================================
+// 2. PHOTO DUMP GENERATOR & CUSTOM OVERRIDES
+// Folders expected:
+//   photos/my-firsts/01.jpg       ... 30.jpg  (30 photos)
+//   photos/stress-buster/01.jpg   ... 10.jpg  (10 photos)
+//   photos/favourites/01.jpg      ... 20.jpg  (20 photos)
+//   photos/we/01.jpg              ... 20.jpg  (20 photos)
+// ============================================================================
+function buildDump({ category, folder, count, defaultTitle, defaultCaption, overrides = {} }) {
+  return Array.from({ length: count }, (_, idx) => {
+    const num = idx + 1;
+    const pad = String(num).padStart(2, "0");
+    const custom = overrides[num] || {};
+    return {
+      src: custom.src || `photos/${folder}/${pad}.jpg`,
+      title: custom.title || `${defaultTitle} · ${pad}`,
+      category,
+      caption: custom.caption || defaultCaption
+    };
+  });
+}
+
 const memories = [
-  {src:"photos/photo-01.jpg",title:"My first gift",category:"Gifts",caption:"A small gift, but a memory I will always associate with thoughtfulness. Thank you for making that moment special."},
-  {src:"photos/photo-02.jpg",title:"A birthday to remember",category:"Birthdays",caption:"Thank you for remembering my day and for the thought behind the gift. It meant more than I probably expressed."},
-  {src:"photos/photo-03.jpg",title:"A moment of comfort",category:"Little things",caption:"Some moments do not need many words. Your presence made that moment feel a little lighter."},
-  {src:"photos/photo-04.jpg",title:"The good old days",category:"Friendship",caption:"A little piece of a time I am glad I got to experience. I will remember it with gratitude."}
-];
-const chapters = [
-  {title:"My first gift",tag:"01 / A beginning",text:"For the thought, the surprise and the feeling attached to that first little gesture. It was never only about the object; it was about being thought of."},
-  {title:"My first birthday gift",tag:"02 / A day remembered",text:"For remembering my day and making it feel a little more special. The gift carries a date, but the memory carries the feeling."},
-  {title:"My first comfort",tag:"03 / A softer moment",text:"For the moments when a conversation, a presence or a simple gesture made things lighter. Thank you for the comfort that existed in those moments."},
-  {title:"My first friend",tag:"04 / The friendship",text:"For the laughter, the conversations and the friendship that made its own place in my life. I am glad that part of the story happened."},
-  {title:"Little things, big memories",tag:"05 / The in-between",text:"For ordinary moments that became meaningful simply because we shared them. Sometimes it is the smallest details that stay."}
-];
-const gifts = [
-  {icon:"✳",title:"The first gift",text:"A little object with a memory attached.",reveal:"Thank you for choosing it, giving it, and making that moment part of my story."},
-  {icon:"✧",title:"The birthday gift",text:"A day made memorable by a thoughtful gesture.",reveal:"Thank you for remembering. I will keep the thought behind it with gratitude."},
-  {icon:"⌁",title:"The things in between",text:"Small gestures that deserve their own place.",reveal:"Not every meaningful thing came wrapped. Some arrived as time, attention and kindness."}
-];
-// Replace these examples with messages you choose to keep. Do not include private messages without consent.
-const letters = [
-  {title:"A little note",date:"A message to remember",text:"Replace this with a good message you want to preserve, exactly as it was written."},
-  {title:"A birthday wish",date:"From another day",text:"Replace this with a birthday wish or a few lines from a conversation that still feels meaningful."},
-  {title:"A small kindness",date:"Kept with care",text:"Add another message here. Keep the original wording and context."}
+  // 1. MY FIRSTS — 30 photos
+  ...buildDump({
+    category: "My Firsts",
+    folder: "my-firsts",
+    count: 30,
+    defaultTitle: "A first memory",
+    defaultCaption: "One of the earliest chapters—kept here because beginnings carry their own quiet weight.",
+    overrides: {
+      1: {
+        title: "My first gift",
+        caption: "A small gift, but a memory I will always associate with thoughtfulness. Thank you for making that moment special."
+      },
+      2: {
+        title: "The first birthday gift",
+        caption: "Thank you for remembering my day and for the thought behind it. It meant more than I probably expressed."
+      },
+      3: {
+        title: "Our first long talk",
+        caption: "When hours passed without either of us noticing the clock."
+      }
+    }
+  }),
+
+  // 2. MY STRESS BUSTER — 10 photos
+  ...buildDump({
+    category: "My Stress buster",
+    folder: "stress-buster",
+    count: 10,
+    defaultTitle: "A lighter hour",
+    defaultCaption: "On heavy days, this was the kind of moment that made everything feel easier to carry.",
+    overrides: {
+      1: {
+        title: "Unplanned laughter",
+        caption: "A moment when all the noise of the week simply faded out."
+      },
+      2: {
+        title: "A moment of comfort",
+        caption: "Some moments do not need many words. Your presence made that hour feel a little lighter."
+      }
+    }
+  }),
+
+  // 3. MY FAVOURITES — 20 photos
+  ...buildDump({
+    category: "My favourites",
+    folder: "favourites",
+    count: 20,
+    defaultTitle: "A favourite frame",
+    defaultCaption: "The ones I always return to first—ordinary light, effortless warmth, kept intact.",
+    overrides: {
+      1: {
+        title: "Golden hour frame",
+        caption: "One of the frames I never get tired of looking at."
+      },
+      2: {
+        title: "Just as you are",
+        caption: "An unposed moment that captured everything genuine."
+      }
+    }
+  }),
+
+  // 4. WE — 20 photos
+  ...buildDump({
+    category: "we",
+    folder: "we",
+    count: 20,
+    defaultTitle: "Two of us",
+    defaultCaption: "A piece of the time we shared—remembered without regret, held with gratitude.",
+    overrides: {
+      1: {
+        title: "The good old days",
+        caption: "A little piece of a time I am glad I got to experience. I will remember it with gratitude."
+      },
+      2: {
+        title: "Side by side",
+        caption: "Two people in the middle of an ordinary afternoon that turned into a memory."
+      }
+    }
+  })
 ];
 
-const field = document.getElementById("memory-field");
-let visibleMemories = [...memories], currentIndex = 0;
+// ============================================================================
+// 3. CHAPTERS, GIFTS & LETTERS
+// ============================================================================
+const chapters = [
+  {
+    title: "My first gift",
+    tag: "01 / A beginning",
+    text: "For the thought, the surprise and the feeling attached to that first little gesture. It was never only about the object; it was about being thought of."
+  },
+  {
+    title: "My first birthday gift",
+    tag: "02 / A day remembered",
+    text: "For remembering my day and making it feel a little more special. The gift carries a date, but the memory carries the feeling."
+  },
+  {
+    title: "My first comfort",
+    tag: "03 / A softer moment",
+    text: "For the moments when a conversation, a presence or a simple gesture made things lighter. Thank you for the comfort that existed in those moments."
+  },
+  {
+    title: "My first friend",
+    tag: "04 / The friendship",
+    text: "For the laughter, the conversations and the friendship that made its own place in my life. I am glad that part of the story happened."
+  },
+  {
+    title: "Little things, big memories",
+    tag: "05 / The in-between",
+    text: "For ordinary moments that became meaningful simply because we shared them. Sometimes it is the smallest details that stay."
+  }
+];
+
+const gifts = [
+  {
+    tag: "Object I",
+    title: "The first gift",
+    text: "A little object with a memory attached.",
+    reveal: "Thank you for choosing it, giving it, and making that moment part of my story."
+  },
+  {
+    tag: "Object II",
+    title: "The birthday gift",
+    text: "A day made memorable by a thoughtful gesture.",
+    reveal: "Thank you for remembering. I will keep the thought behind it with gratitude."
+  },
+  {
+    tag: "Object III",
+    title: "The things in between",
+    text: "Small gestures that deserve their own place.",
+    reveal: "Not every meaningful thing came wrapped. Some arrived as time, attention and kindness."
+  }
+];
+
+// Replace these examples with messages you choose to keep.
+const letters = [
+  {
+    title: "A little note",
+    date: "Note I · Kept with care",
+    text: "Replace this with a good message you want to preserve, exactly as it was written."
+  },
+  {
+    title: "A birthday wish",
+    date: "Note II · From another day",
+    text: "Replace this with a birthday wish or a few lines from a conversation that still feels meaningful."
+  },
+  {
+    title: "A small kindness",
+    date: "Note III · Preserved",
+    text: "Add another message here. Keep the original wording and context."
+  }
+];
+
+// ============================================================================
+// 4. APPLICATION LOGIC
+// ============================================================================
 const $ = id => document.getElementById(id);
+const field = $("memory-field");
+
+let activeFilter = "All";
+let viewMode = "scatter"; // "scatter" | "contact"
+let showAllOnTable = false;
+let filteredMemories = [...memories];
+let currentIndex = 0;
 
 function safe(s) {
-  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c]));
 }
 
 function toast(msg) {
   const t = $("toast");
   t.textContent = msg;
   t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2300);
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+// Apply faded portrait watermark with graceful fallback silhouette if file isn't present yet
+function initPortraitWatermark() {
+  const fallbackSilhouette = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 800'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='40%25' r='55%25'%3E%3Cstop offset='0%25' stop-color='%23e8dfd1' stop-opacity='0.65'/%3E%3Cstop offset='100%25' stop-color='%23e8dfd1' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='600' height='800' fill='url(%23g)'/%3E%3Cellipse cx='300' cy='275' rx='86' ry='108' fill='%23d8ccb9' opacity='0.45'/%3E%3Cpath d='M135 760 C145 540, 210 445, 300 445 C390 445, 455 540, 465 760 Z' fill='%23d8ccb9' opacity='0.4'/%3E%3C/svg%3E")`;
+  if (!personPortrait) {
+    document.documentElement.style.setProperty("--portrait-url", fallbackSilhouette);
+    return;
+  }
+  const probe = new Image();
+  probe.onload = () => {
+    document.documentElement.style.setProperty("--portrait-url", `url("${personPortrait}")`);
+  };
+  probe.onerror = () => {
+    document.documentElement.style.setProperty("--portrait-url", fallbackSilhouette);
+  };
+  probe.src = personPortrait;
+}
+
+// Update filter counts dynamically
+function updateCounts() {
+  const categories = ["All", "My Firsts", "My Stress buster", "My favourites", "we"];
+  categories.forEach(cat => {
+    const el = document.getElementById(`count-${cat}`);
+    if (el) {
+      el.textContent = cat === "All"
+        ? memories.length
+        : memories.filter(m => m.category === cat).length;
+    }
+  });
 }
 
 function enterArchive() {
-  const intro = $("intro");
-  intro.style.opacity = "0";
+  $("intro").style.opacity = "0";
   setTimeout(() => {
-    intro.style.display = "none";
+    $("intro").style.display = "none";
     $("experience").classList.add("active");
     requestAnimationFrame(() => $("experience").classList.add("shown"));
     window.scrollTo(0, 0);
-    renderMemories(false);
-  }, 450);
+    renderMemories();
+  }, 420);
 }
+
 $("begin").addEventListener("click", enterArchive);
 
-function computePositions(count, randomize = false) {
-  const isMobile = window.innerWidth < 680;
-  const cols = Math.min(count, isMobile ? 2 : 4);
-  const rows = Math.ceil(count / cols);
-  const slots = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (slots.length < count) slots.push({ r, c });
-    }
-  }
-  if (randomize) {
-    for (let i = slots.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [slots[i], slots[j]] = [slots[j], slots[i]];
-    }
-  }
-  const maxX = isMobile ? 54 : 74;
-  const maxY = isMobile ? 56 : 52;
-  return slots.map((slot, i) => {
-    const cellW = maxX / Math.max(cols, 1);
-    const cellH = maxY / Math.max(rows, 1);
-    const offsetX = randomize ? (Math.random() * 0.45 + 0.12) * cellW : ((i * 19) % 11) * 0.65;
-    const offsetY = randomize ? (Math.random() * 0.45 + 0.12) * cellH : ((i * 29) % 13) * 0.75;
-    const x = Math.min(maxX, Math.max(4, 5 + slot.c * cellW + offsetX));
-    const y = Math.min(maxY, Math.max(7, 8 + slot.r * cellH + offsetY));
-    const rot = randomize
-      ? (Math.random() * 9 - 4.5).toFixed(1)
-      : ((i % 2 ? -1 : 1) * (1.5 + (i * 3) % 4)).toFixed(1);
+// Compute natural, non-clumped positions for scattered prints
+function computeScatterLayout(list) {
+  const count = list.length;
+  const cols = window.innerWidth < 640 ? 2 : window.innerWidth < 1024 ? 4 : 5;
+  const rows = Math.max(1, Math.ceil(count / cols));
+  const rowHeight = window.innerWidth < 640 ? 225 : 255;
+  const tableHeight = Math.max(600, rows * rowHeight + 110);
+  field.style.minHeight = `${tableHeight}px`;
+
+  const cellW = 82 / cols;
+  const cellH = 82 / rows;
+
+  return list.map((_, idx) => {
+    const col = idx % cols;
+    const row = Math.floor(idx / cols);
+    const jitterX = (Math.random() - 0.5) * (cellW * 0.48);
+    const jitterY = (Math.random() - 0.5) * (cellH * 0.42);
+    const x = Math.max(3, Math.min(82, 6 + col * cellW + cellW * 0.14 + jitterX));
+    const y = Math.max(4, Math.min(86, 5 + row * cellH + cellH * 0.12 + jitterY));
+    const rot = ((idx % 2 === 0 ? 1 : -1) * (1.2 + Math.random() * 3.4)).toFixed(2);
     return { x, y, rot };
   });
 }
 
-function renderMemories(randomize = false) {
-  field.querySelectorAll(".memory-photo,.no-photos").forEach(e => e.remove());
-  if (!visibleMemories.length) {
-    field.innerHTML = '<div class="no-photos">No photographs in this chapter yet.</div>';
+function updateHintBar() {
+  const total = filteredMemories.length;
+  const spreadBtn = $("toggleSpread");
+  const hintLeft = $("hintLeft");
+
+  if (viewMode === "contact") {
+    hintLeft.textContent = `Contact sheet · Showing all ${total} prints in ${activeFilter}`;
+    spreadBtn.style.display = "none";
     return;
   }
-  const pos = computePositions(visibleMemories.length, randomize);
-  visibleMemories.forEach((m, i) => {
-    const original = memories.indexOf(m);
-    const p = pos[i] || { x: 10, y: 10, rot: 0 };
-    const card = document.createElement("button");
-    card.className = "memory-photo";
-    card.style.left = `${p.x}%`;
-    card.style.top = `${p.y}%`;
-    card.style.setProperty("--rot", `${p.rot}deg`);
-    card.style.zIndex = 2 + i;
 
-    const numLabel = String(original + 1).padStart(2, "0");
+  hintLeft.textContent = "Drag any print to rearrange · Click to read its note";
+
+  const limit = 16;
+  if (total <= limit) {
+    spreadBtn.style.display = "none";
+  } else {
+    spreadBtn.style.display = "inline-block";
+    spreadBtn.textContent = showAllOnTable
+      ? `Show curated table (${limit} of ${total})`
+      : `Show all ${total} prints on table`;
+  }
+}
+
+function renderMemories() {
+  field.querySelectorAll(".memory-photo, .no-photos").forEach(e => e.remove());
+
+  if (!filteredMemories.length) {
+    field.style.minHeight = "400px";
+    field.innerHTML = '<div class="no-photos">No photographs in this collection yet.</div>';
+    updateHintBar();
+    return;
+  }
+
+  let itemsToRender = filteredMemories;
+  if (viewMode === "scatter" && !showAllOnTable && filteredMemories.length > 16) {
+    itemsToRender = filteredMemories.slice(0, 16);
+  }
+
+  if (viewMode === "contact") {
+    field.classList.add("contact-mode");
+    field.style.minHeight = "";
+  } else {
+    field.classList.remove("contact-mode");
+  }
+
+  const layout = viewMode === "scatter" ? computeScatterLayout(itemsToRender) : [];
+
+  itemsToRender.forEach((m, i) => {
+    const collectionIdx = filteredMemories.indexOf(m) + 1;
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "memory-photo";
+
+    if (viewMode === "scatter") {
+      const p = layout[i];
+      card.style.left = `${p.x}%`;
+      card.style.top = `${p.y}%`;
+      card.style.setProperty("--rot", `${p.rot}deg`);
+      card.style.zIndex = 2 + (i % 12);
+    }
+
+    const shortFile = m.src.replace(/^photos\//, "");
+
     card.innerHTML = `
       <div class="photo-frame">
-        <img src="${safe(m.src)}" alt="${safe(m.title)}" draggable="false">
-        <div class="photo-fallback">
-          <span>Photograph ${numLabel}</span>
-          <span>${safe(m.title)}</span>
+        <img src="${safe(m.src)}" alt="${safe(m.title)}" loading="lazy" draggable="false">
+        <div class="photo-fallback" aria-hidden="true">
+          <span class="fallback-tag">${safe(m.category)} · ${String(collectionIdx).padStart(2, "0")}</span>
+          <span class="fallback-title">${safe(m.title)}</span>
+          <span class="fallback-file">${safe(shortFile)}</span>
         </div>
       </div>
       <span class="photo-title">${safe(m.title)}</span>
-      <span class="photo-index">${numLabel}</span>
+      <span class="photo-index">${String(collectionIdx).padStart(2, "0")}</span>
     `;
 
     const img = card.querySelector("img");
     const frame = card.querySelector(".photo-frame");
-    img.addEventListener("error", () => {
-      frame.classList.add("missing");
-    });
+    img.addEventListener("error", () => frame.classList.add("missing"));
 
     card.addEventListener("click", () => openMemory(m));
-    makeDraggable(card);
+    if (viewMode === "scatter") {
+      makeDraggable(card);
+    }
     field.appendChild(card);
   });
+
+  updateHintBar();
 }
 
 function makeDraggable(el) {
   let startX, startY, left, top, moved = false;
+
   el.addEventListener("pointerdown", e => {
-    if (e.button !== 0) return;
+    if (e.button !== 0 || viewMode !== "scatter") return;
     startX = e.clientX;
     startY = e.clientY;
     left = el.offsetLeft;
     top = el.offsetTop;
     moved = false;
     el.setPointerCapture(e.pointerId);
-    el.classList.add("is-dragging");
+    el.style.zIndex = 22;
   });
+
   el.addEventListener("pointermove", e => {
     if (!el.hasPointerCapture(e.pointerId)) return;
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
     if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
     if (moved) {
-      el.style.left = `${Math.max(4, Math.min(field.clientWidth - el.offsetWidth - 4, left + dx))}px`;
-      el.style.top = `${Math.max(4, Math.min(field.clientHeight - el.offsetHeight - 4, top + dy))}px`;
+      el.style.left = `${Math.max(0, Math.min(field.clientWidth - el.offsetWidth, left + dx))}px`;
+      el.style.top = `${Math.max(0, Math.min(field.clientHeight - el.offsetHeight, top + dy))}px`;
+      el.style.transform = "rotate(0deg)";
     }
   });
+
   el.addEventListener("pointerup", e => {
     if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
-    el.classList.remove("is-dragging");
     if (moved) {
       el.dataset.dragged = "yes";
-      setTimeout(() => delete el.dataset.dragged, 110);
+      setTimeout(() => delete el.dataset.dragged, 120);
     }
   });
-  el.addEventListener("pointercancel", () => {
-    el.classList.remove("is-dragging");
-  });
+
   el.addEventListener("click", e => {
     if (el.dataset.dragged === "yes") {
       e.stopImmediatePropagation();
       e.preventDefault();
     }
-  });
+  }, true);
 }
 
+// Collection-scoped Lightbox Modal
 function openMemory(m) {
-  currentIndex = memories.indexOf(m);
-  const wrap = $("modalPrintWrap");
+  const list = filteredMemories.length ? filteredMemories : memories;
+  currentIndex = Math.max(0, list.indexOf(m));
+  const item = list[currentIndex];
+  const posLabel = `${String(currentIndex + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")}`;
+
+  const frame = $("modalFrame");
   const img = $("modalImg");
-  wrap.classList.remove("missing");
-  $("modalFallbackNum").textContent = `Photograph ${String(currentIndex + 1).padStart(2, "0")}`;
-  $("modalFallbackTitle").textContent = m.title;
+  frame.classList.remove("missing");
 
-  img.onerror = () => {
-    wrap.classList.add("missing");
-  };
-  img.src = m.src;
-  img.alt = m.title;
+  $("modalFallbackTag").textContent = `${item.category} · ${posLabel}`;
+  $("modalFallbackTitle").textContent = item.title;
+  $("modalFallbackFile").textContent = item.src;
 
-  $("modalCategory").textContent = m.category || "A memory";
-  $("modalTitle").textContent = m.title;
-  $("modalCaption").textContent = m.caption;
+  img.onerror = () => frame.classList.add("missing");
+  img.src = item.src;
+  img.alt = item.title;
+
+  $("modalCategory").textContent = `${item.category} · ${posLabel}`;
+  $("modalTitle").textContent = item.title;
+  $("modalCaption").textContent = item.caption;
   $("memoryModal").classList.add("open");
   document.body.style.overflow = "hidden";
 }
@@ -1503,111 +1825,130 @@ $("memoryModal").addEventListener("click", e => {
 });
 
 function stepMemory(dir) {
-  if (!memories.length) return;
-  currentIndex = (currentIndex + dir + memories.length) % memories.length;
-  openMemory(memories[currentIndex]);
+  const list = filteredMemories.length ? filteredMemories : memories;
+  if (!list.length) return;
+  currentIndex = (currentIndex + dir + list.length) % list.length;
+  openMemory(list[currentIndex]);
 }
+
 $("prevMemory").onclick = () => stepMemory(-1);
 $("nextMemory").onclick = () => stepMemory(1);
 
+// Filter & View Controls
 $("filters").addEventListener("click", e => {
   const b = e.target.closest("[data-filter]");
   if (!b) return;
   document.querySelectorAll(".filter").forEach(x => x.classList.remove("active"));
   b.classList.add("active");
-  visibleMemories = b.dataset.filter === "All"
+  activeFilter = b.dataset.filter;
+  showAllOnTable = false;
+  filteredMemories = activeFilter === "All"
     ? [...memories]
-    : memories.filter(m => m.category === b.dataset.filter);
-  renderMemories(false);
+    : memories.filter(m => m.category === activeFilter);
+  renderMemories();
 });
 
+$("modeScatter").onclick = () => {
+  viewMode = "scatter";
+  $("modeScatter").classList.add("active");
+  $("modeContact").classList.remove("active");
+  $("scatterAgain").style.display = "inline-block";
+  renderMemories();
+};
+
+$("modeContact").onclick = () => {
+  viewMode = "contact";
+  $("modeContact").classList.add("active");
+  $("modeScatter").classList.remove("active");
+  $("scatterAgain").style.display = "none";
+  renderMemories();
+};
+
+$("toggleSpread").onclick = () => {
+  showAllOnTable = !showAllOnTable;
+  renderMemories();
+};
+
 $("scatterAgain").onclick = () => {
-  const cards = [...field.querySelectorAll(".memory-photo")];
-  if (!cards.length) return;
-  const fresh = computePositions(cards.length, true);
-  cards.forEach((card, i) => {
-    const p = fresh[i];
-    card.style.left = `${p.x}%`;
-    card.style.top = `${p.y}%`;
-    card.style.setProperty("--rot", `${p.rot}deg`);
-  });
-  toast("The photographs have found new places.");
+  if (filteredMemories.length > 16 && !showAllOnTable) {
+    // Shuffle the subset on table so reshuffling reveals different prints
+    filteredMemories = [...filteredMemories].sort(() => Math.random() - 0.5);
+  }
+  renderMemories();
+  toast("The prints have settled into new places.");
 };
 
 $("randomMemory").onclick = () => {
-  if (!memories.length) return;
-  openMemory(memories[Math.floor(Math.random() * memories.length)]);
+  const pool = filteredMemories.length ? filteredMemories : memories;
+  if (!pool.length) return;
+  openMemory(pool[Math.floor(Math.random() * pool.length)]);
 };
 
 $("backTop").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
-// 02 / Intimate Literary Volume Index
+// Render Chapters Index
 chapters.forEach(c => {
   const b = document.createElement("button");
-  b.className = "chapter-tile";
+  b.type = "button";
+  b.className = "chapter-row";
   b.innerHTML = `
     <span class="mono num">${safe(c.tag)}</span>
-    <div class="chapter-tile-main">
-      <h3>${safe(c.title)}</h3>
-      <p>Open this page and stay with this memory for a moment.</p>
-    </div>
-    <span class="open-label">Turn the page &nearr;</span>
+    <h3>${safe(c.title)}</h3>
+    <span class="open-label">Read →</span>
   `;
   b.onclick = () => {
-    document.querySelectorAll(".chapter-tile").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".chapter-row").forEach(r => r.classList.remove("active"));
     b.classList.add("active");
     $("detailTag").textContent = c.tag;
     $("detailTitle").textContent = c.title;
     $("detailText").textContent = c.text;
-    const detail = $("chapterDetail");
-    detail.classList.remove("open");
-    void detail.offsetWidth;
-    detail.classList.add("open");
-    detail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    $("chapterDetail").classList.add("open");
+    $("chapterDetail").scrollIntoView({ behavior: "smooth", block: "nearest" });
   };
   $("chapterGrid").appendChild(b);
 });
 
 $("closeDetail").onclick = () => {
   $("chapterDetail").classList.remove("open");
-  document.querySelectorAll(".chapter-tile").forEach(x => x.classList.remove("active"));
+  document.querySelectorAll(".chapter-row").forEach(r => r.classList.remove("active"));
 };
 
-// 03 / Quiet Keepsake Cards (no cheesy icons)
-gifts.forEach((g, idx) => {
+// Render Gifts
+gifts.forEach(g => {
   const el = document.createElement("article");
   el.className = "gift";
   el.innerHTML = `
     <div>
-      <span class="mono gift-num">0${idx + 1}</span>
+      <div class="mono gift-num">${safe(g.tag)}</div>
       <h3>${safe(g.title)}</h3>
       <p>${safe(g.text)}</p>
     </div>
-    <button type="button">Read the memory</button>
+    <button type="button">Unwrap the memory</button>
   `;
   el.querySelector("button").onclick = () => {
     const p = el.querySelector("p");
     const open = el.dataset.open === "yes";
     p.textContent = open ? g.text : g.reveal;
     el.dataset.open = open ? "no" : "yes";
-    el.classList.toggle("is-open", !open);
-    el.querySelector("button").textContent = open ? "Read the memory" : "Fold it back";
+    el.classList.toggle("unwrapped", !open);
+    el.querySelector("button").textContent = open ? "Unwrap the memory" : "Fold it back";
   };
   $("giftArea").appendChild(el);
 });
 
-// 04 / Understated Folded Stationery Cards
-letters.forEach((l, idx) => {
+// Render Letters
+letters.forEach(l => {
   const b = document.createElement("button");
+  b.type = "button";
   b.className = "envelope";
   b.innerHTML = `
-    <div class="envelope-head">
-      <span class="mono">0${idx + 1}</span>
-      <span class="mono">Unfold &nearr;</span>
+    <div class="envelope-top">
+      <span class="mono">${safe(l.date)}</span>
+      <span class="mono">Open →</span>
     </div>
     <div>
       <h3>${safe(l.title)}</h3>
-      <small>${safe(l.date)}</small>
+      <small>Unfold this note</small>
     </div>
   `;
   b.onclick = () => {
@@ -1625,35 +1966,45 @@ $("letterModal").addEventListener("click", e => {
   if (e.target === $("letterModal")) closeModal("letterModal");
 });
 
+// Keyboard shortcuts
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     closeModal("memoryModal");
     closeModal("letterModal");
   }
-  if (e.key === "ArrowRight" && $("memoryModal").classList.contains("open")) stepMemory(1);
-  if (e.key === "ArrowLeft" && $("memoryModal").classList.contains("open")) stepMemory(-1);
+  if ($("memoryModal").classList.contains("open")) {
+    if (e.key === "ArrowRight") stepMemory(1);
+    if (e.key === "ArrowLeft") stepMemory(-1);
+  }
 });
 
-// 05 / Peaceful, unhurried settling into stillness
+// Gentle "Let the memories settle" interaction
 $("release").onclick = () => {
   const btn = $("release");
   btn.disabled = true;
-  btn.textContent = "Letting the memories settle…";
+  btn.textContent = "Letting the room grow quiet…";
 
-  document.body.classList.add("is-settled");
+  const cards = [...document.querySelectorAll(".memory-photo")];
+  cards.forEach((c, i) => {
+    setTimeout(() => {
+      c.classList.add("settled");
+    }, Math.min(i * 25, 900));
+  });
+
   const msg = $("release-message");
-  msg.textContent = "The memories can stay. The rest can be released.";
+  msg.textContent = "The memories can stay. Everything else can rest.";
   requestAnimationFrame(() => msg.classList.add("visible"));
 
   setTimeout(() => {
     btn.disabled = false;
-    btn.textContent = "Return to the beginning";
-    btn.onclick = () => {
-      document.body.classList.remove("is-settled");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-  }, 1600);
+    btn.textContent = "Return to the beginning ↑";
+    btn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 1500);
 };
+
+// Initialize counts & portrait watermark on load
+initPortraitWatermark();
+updateCounts();
 </script>
 </body>
 </html>
